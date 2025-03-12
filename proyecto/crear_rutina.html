@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Ejercicio</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: none;
+            background: #575fcf;
+            color: white;
+            cursor: pointer;
+        }
+
+        select, input {
+            background: #222;
+            color: white;
+        }
+
+        button:hover {
+            background: #4b4bdb;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>Selecciona un Ejercicio</h1>
+        <div class="grid">
+            <label for="grupo">Grupo Muscular</label>
+            <select id="grupo">
+                <option value="">-- Selecciona --</option>
+                <option value="pecho">Pecho</option>
+                <option value="pierna">Pierna</option>
+                <option value="brazo">Brazo</option>
+            </select>
+
+            <label for="ejercicio">Ejercicio</label>
+            <select id="ejercicio" disabled>
+                <option value="">-- Selecciona un Grupo Primero --</option>
+            </select>
+
+            <label for="peso">Peso (kg)</label>
+            <input type="number" id="peso" placeholder="Ingrese el peso" disabled>
+
+            <label for="repeticiones">Repeticiones</label>
+            <input type="number" id="repeticiones" placeholder="Ingrese las repeticiones" disabled>
+
+            <label for="series">Series</label>
+            <input type="number" id="series" placeholder="Ingrese las series" disabled>
+
+            <button id="agregar">Agregar a la Rutina</button>
+        </div>
+    </main>
+
+    <script>
+        const ejercicios = {
+            pecho: ["Press Banca", "Press Inclinado", "Aperturas", "Fondos en Paralelas"],
+            pierna: ["Sentadilla", "Prensa", "Desplantes", "Extensiones"],
+            brazo: ["Curl Biceps", "Martillo", "Triceps Cuerda", "Dips"]
+        };
+
+        document.getElementById("grupo").addEventListener("change", function() {
+            const grupoSeleccionado = this.value;
+            const selectEjercicio = document.getElementById("ejercicio");
+
+            selectEjercicio.innerHTML = `<option value="">-- Selecciona --</option>`;
+            selectEjercicio.disabled = !grupoSeleccionado;
+            if (grupoSeleccionado) {
+                ejercicios[grupoSeleccionado].forEach(ej => {
+                    const option = document.createElement("option");
+                    option.value = ej;
+                    option.textContent = ej;
+                    selectEjercicio.appendChild(option);
+                });
+            }
+        });
+
+        document.getElementById("ejercicio").addEventListener("change", function() {
+            const ejercicioSeleccionado = this.value;
+            const peso = document.getElementById("peso");
+            const repeticiones = document.getElementById("repeticiones");
+            const series = document.getElementById("series");
+
+            peso.disabled = repeticiones.disabled = series.disabled = !ejercicioSeleccionado;
+
+            let rutina = JSON.parse(localStorage.getItem("rutina")) || [];
+            let ultimoEjercicio = rutina.find(e => e.nombre === ejercicioSeleccionado);
+            if (ultimoEjercicio) {
+                peso.value = ultimoEjercicio.peso;
+                repeticiones.value = ultimoEjercicio.repeticiones;
+                series.value = ultimoEjercicio.series;
+            } else {
+                peso.value = repeticiones.value = series.value = "";
+            }
+        });
+
+        document.getElementById("agregar").addEventListener("click", function() {
+            const ejercicioSeleccionado = document.getElementById("ejercicio").value;
+            const peso = document.getElementById("peso").value;
+            const repeticiones = document.getElementById("repeticiones").value;
+            const series = document.getElementById("series").value;
+
+            if (!ejercicioSeleccionado || !peso || !repeticiones || !series) {
+                alert("Completa todos los campos.");
+                return;
+            }
+
+            let rutina = JSON.parse(localStorage.getItem("rutina")) || [];
+            rutina.push({ nombre: ejercicioSeleccionado, peso, repeticiones, series });
+            localStorage.setItem("rutina", JSON.stringify(rutina));
+
+            window.location.href = "rutina.html";
+        });
+    </script>
+</body>
+</html>

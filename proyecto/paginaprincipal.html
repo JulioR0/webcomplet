@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutina de Gimnasio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="perfil">
+            <img src="perfil.png" alt="Perfil">
+            <button id="cerrar-sesion" class="logout">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1>Selecciona el día de entrenamiento</h1>
+        <div class="grid-dias">
+            <a href="rutina.html?dia=1" class="dia">Día 1</a>
+            <a href="rutina.html?dia=2" class="dia">Día 2</a>
+            <a href="rutina.html?dia=3" class="dia">Día 3</a>
+            <a href="rutina.html?dia=4" class="dia">Día 4</a>
+            <a href="rutina.html?dia=5" class="dia">Día 5</a>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById("cerrar-sesion").addEventListener("click", function() {
+            window.location.href = "../index.html";
+        });
+    </script>
+</body>
+</html>

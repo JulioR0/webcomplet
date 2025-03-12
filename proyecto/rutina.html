@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutina de Ejercicios</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="perfil">
+            <img src="perfil.png" alt="Perfil">
+            <button id="cerrar-sesion" class="logout">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1>Registro de Entrenamiento</h1>
+        <form id="rutina-form">
+            <div id="ejercicios-lista">
+                <!-- Aquí aparecerán los ejercicios agregados -->
+            </div>
+            <button type="button" id="agregar-ejercicio">Agregar Ejercicio</button>
+            <button type="submit">Guardar Rutina</button>
+        </form>
+        <button type="button" id="registro-rutinas">Registro de Rutinas</button>
+        <button type="button" id="volver">Volver a la Página Principal</button>
+    </main>
+
+    <script>
+        document.getElementById("agregar-ejercicio").addEventListener("click", function() {
+            window.location.href = "crear_rutina.html";
+        });
+
+        document.getElementById("volver").addEventListener("click", function() {
+            window.location.href = "paginaprincipal.html";
+        });
+
+        document.getElementById("registro-rutinas").addEventListener("click", function() {
+            window.location.href = "registroRutina.html";
+        });
+
+        document.getElementById("cerrar-sesion").addEventListener("click", function() {
+            localStorage.clear(); // Borra datos de sesión si es necesario
+            window.location.href = "../index.html";
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const ejerciciosLista = document.getElementById("ejercicios-lista");
+            const ejerciciosGuardados = JSON.parse(localStorage.getItem("rutina")) || [];
+
+            ejerciciosGuardados.forEach(ejercicio => {
+                const div = document.createElement("div");
+                div.innerHTML = `<label>${ejercicio.nombre}</label>
+                    <input type="number" class="reps" placeholder="Repeticiones">
+                    <input type="number" class="series" placeholder="Series">
+                    <input type="number" class="peso" placeholder="Peso (kg)">`;
+                ejerciciosLista.appendChild(div);
+            });
+
+            document.getElementById("rutina-form").addEventListener("submit", function(event) {
+                event.preventDefault();
+                
+                let rutinaCapturada = [];
+                document.querySelectorAll("#ejercicios-lista div").forEach(div => {
+                    let nombre = div.querySelector("label").textContent;
+                    let repeticiones = div.querySelector(".reps").value || 'N/A';
+                    let series = div.querySelector(".series").value || 'N/A';
+                    let peso = div.querySelector(".peso").value || 'N/A';
+                    
+                    rutinaCapturada.push({ nombre, repeticiones, series, peso });
+                });
+
+                let registros = JSON.parse(localStorage.getItem("registrosRutinas")) || [];
+                registros.push({ id: registros.length + 1, ejercicios: rutinaCapturada });
+
+                localStorage.setItem("registrosRutinas", JSON.stringify(registros));
+                alert("Rutina guardada exitosamente!");
+            });
+        });
+    </script>
+</body>
+</html>
